@@ -30,3 +30,11 @@ export const registerSchema = ValidationAdapter.object({
 });
 
 export type RegisterFormValues = InferValidationType<typeof registerSchema>;
+
+export const forgotPasswordSchema = ValidationAdapter.object({
+  email: emailSchema,
+});
+
+export type ForgotPasswordFormValues = InferValidationType<
+  typeof forgotPasswordSchema
+>;

@@ -65,6 +65,13 @@ export class SupabaseAuthAdapter implements IAuthRepository {
     }
   }
 
+  async resetPassword(email: string): Promise<void> {
+    const { error } = await this.client.auth.resetPasswordForEmail(email);
+    if (error) {
+      throw new AuthenticationError(error.message, error);
+    }
+  }
+
   async getCurrentUser(): Promise<AuthResponseDTO | null> {
     const {
       data: { user },

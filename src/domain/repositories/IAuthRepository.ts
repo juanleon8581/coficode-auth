@@ -4,5 +4,6 @@ export interface IAuthRepository {
   signIn(dto: LoginDTO): Promise<AuthResponseDTO>;
   signUp(dto: RegisterDTO): Promise<AuthResponseDTO>;
   signOut(): Promise<void>;
+  resetPassword(email: string): Promise<void>;
   getCurrentUser(): Promise<AuthResponseDTO | null>;
 }
