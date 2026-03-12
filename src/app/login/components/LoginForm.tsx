@@ -18,10 +18,17 @@ import {
   LoginFormValues,
 } from "@/infrastructure/validations/authSchemas";
 
+import {
+  successToast,
+  errorToast,
+} from "@/presentation/components/Toaster/controller/toast.controller";
+
 export const LoginForm = ({
   onSubmit,
 }: {
-  onSubmit?: (data: LoginFormValues) => void | Promise<void>;
+  onSubmit?: (
+    data: LoginFormValues,
+  ) => Promise<{ error?: string } | void> | void;
 }) => {
   const form = useForm<LoginFormValues>({
     resolver: ValidationAdapter.getResolver<LoginFormValues>(loginSchema),
@@ -33,7 +40,12 @@ export const LoginForm = ({
 
   const handleSubmit = async (data: LoginFormValues) => {
     if (onSubmit) {
-      await onSubmit(data);
+      const result = await onSubmit(data);
+      if (result?.error) {
+        errorToast("Error logging in", result.error);
+        return;
+      }
+      successToast("Login successful", "Redirecting...");
     }
   };
 

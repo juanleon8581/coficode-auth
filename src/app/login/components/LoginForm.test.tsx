@@ -2,10 +2,20 @@ import { render, screen, waitFor, cleanup } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, it, expect, vi, afterEach } from "vitest";
 import { LoginForm } from "./LoginForm";
+import {
+  successToast,
+  errorToast,
+} from "@/presentation/components/Toaster/controller/toast.controller";
+
+vi.mock("@/presentation/components/Toaster/controller/toast.controller", () => ({
+  successToast: vi.fn(),
+  errorToast: vi.fn(),
+}));
 
 describe("LoginForm", () => {
   afterEach(() => {
     cleanup();
+    vi.clearAllMocks();
   });
 
   it("renders all form elements correctly", () => {
@@ -54,8 +64,8 @@ describe("LoginForm", () => {
     });
   });
 
-  it("calls onSubmit with correct data when form is valid", async () => {
-    const handleSubmit = vi.fn();
+  it("calls onSubmit with correct data when form is valid and shows success toast", async () => {
+    const handleSubmit = vi.fn().mockResolvedValue(undefined);
     render(<LoginForm onSubmit={handleSubmit} />);
 
     const emailInput = screen.getByLabelText(/Email/i);
@@ -72,6 +82,28 @@ describe("LoginForm", () => {
         email: "test@example.com",
         password: "ValidPassword123",
       });
+      expect(successToast).toHaveBeenCalledWith("Login successful", "Redirecting...");
+      expect(errorToast).not.toHaveBeenCalled();
+    });
+  });
+
+  it("shows error toast when onSubmit returns an error string in the result object", async () => {
+    const errorMessage = "Credenciales incorrectas";
+    const handleSubmit = vi.fn().mockResolvedValue({ error: errorMessage });
+    render(<LoginForm onSubmit={handleSubmit} />);
+
+    const emailInput = screen.getByLabelText(/Email/i);
+    const passwordInput = screen.getByLabelText(/Password/i);
+    const submitButton = screen.getByRole("button", { name: /Entrar/i });
+
+    await userEvent.type(emailInput, "test@example.com");
+    await userEvent.type(passwordInput, "WrongPassword123");
+    await userEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(handleSubmit).toHaveBeenCalledTimes(1);
+      expect(errorToast).toHaveBeenCalledWith("Error logging in", errorMessage);
+      expect(successToast).not.toHaveBeenCalled();
     });
   });
 });

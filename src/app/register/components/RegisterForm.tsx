@@ -19,10 +19,17 @@ import {
   RegisterFormValues,
 } from "@/infrastructure/validations/authSchemas";
 
+import {
+  successToast,
+  errorToast,
+} from "@/presentation/components/Toaster/controller/toast.controller";
+
 export const RegisterForm = ({
   onSubmit,
 }: {
-  onSubmit?: (data: RegisterFormValues) => void | Promise<void>;
+  onSubmit?: (
+    data: RegisterFormValues,
+  ) => Promise<{ error?: string } | void> | void;
 }) => {
   const form = useForm<RegisterFormValues>({
     resolver: ValidationAdapter.getResolver<RegisterFormValues>(registerSchema),
@@ -37,7 +44,12 @@ export const RegisterForm = ({
 
   const handleSubmit = async (data: RegisterFormValues) => {
     if (onSubmit) {
-      await onSubmit(data);
+      const result = await onSubmit(data);
+      if (result?.error) {
+        errorToast("Registration failed", result.error);
+        return;
+      }
+      successToast("Registration successful", "Redirecting to login...");
     }
   };
 

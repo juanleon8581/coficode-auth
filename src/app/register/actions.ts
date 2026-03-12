@@ -5,15 +5,22 @@ import { SupabaseAuthAdapter } from "@/infrastructure/services/supabase/Supabase
 import { RegisterFormValues } from "@/infrastructure/validations/authSchemas";
 import { redirect } from "next/navigation";
 
-export async function registerAction(data: RegisterFormValues) {
+export async function registerAction(data: RegisterFormValues): Promise<{ error?: string } | void> {
   const supabase = await createClient();
   const authAdapter = new SupabaseAuthAdapter(supabase);
 
-  await authAdapter.signUp({
-    email: data.email,
-    password: data.password,
-    fullName: data.fullName,
-  });
+  try {
+    await authAdapter.signUp({
+      email: data.email,
+      password: data.password,
+      fullName: data.fullName,
+    });
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      return { error: error.message };
+    }
+    return { error: "Registration failed" };
+  }
 
   // If the registration is successful, we redirect to login or dashboard
   // Depending on whether Supabase requires email confirmation
