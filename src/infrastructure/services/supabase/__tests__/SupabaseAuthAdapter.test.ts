@@ -164,16 +164,15 @@ describe("SupabaseAuthAdapter", () => {
   });
 
   describe("getCurrentUser", () => {
-    it("should return null if user fetch fails", async () => {
+    it("should throw AuthenticationError if user fetch fails", async () => {
       mockSupabaseClient.auth.getUser.mockResolvedValue({
         data: { user: null },
         error: { message: "No session" },
       });
 
-      const result = await adapter.getCurrentUser();
-
-      expect(mockSupabaseClient.auth.getUser).toHaveBeenCalledOnce();
-      expect(result).toBeNull();
+      expect(() => {
+        return adapter.getCurrentUser();
+      }).rejects.toThrow(AuthenticationError);
     });
 
     it("should return mapped AuthResponseDTO if user is authenticated", async () => {

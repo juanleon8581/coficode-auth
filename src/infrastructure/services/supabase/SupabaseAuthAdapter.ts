@@ -1,4 +1,4 @@
-import { SupabaseClient } from "@supabase/supabase-js";
+import { AuthError, SupabaseClient } from "@supabase/supabase-js";
 import { AuthenticationError } from "../../../domain/errors/DomainError";
 import { SupabaseMapper } from "../../mappers/SupabaseMapper";
 import { AuthRepository } from "@/domain/repositories/IAuthRepository";
@@ -11,6 +11,11 @@ export class SupabaseAuthAdapter implements AuthRepository {
 
   constructor(client: SupabaseClient) {
     this.client = client;
+  }
+
+  private static mapError(error: AuthError) {
+    const { message, code, name, status } = error;
+    return { message, code, name, status };
   }
 
   async signIn(dto: LoginDTO): Promise<IAuthResponse> {
@@ -26,7 +31,9 @@ export class SupabaseAuthAdapter implements AuthRepository {
     });
 
     if (error) {
-      throw new AuthenticationError(error.message, error);
+      const errorDetails = SupabaseAuthAdapter.mapError(error);
+
+      throw new AuthenticationError(errorDetails.message, errorDetails);
     }
 
     return SupabaseMapper.toDomainResponse(data.user);
@@ -50,7 +57,8 @@ export class SupabaseAuthAdapter implements AuthRepository {
     });
 
     if (error) {
-      throw new AuthenticationError(error.message, error);
+      const errorDetails = SupabaseAuthAdapter.mapError(error);
+      throw new AuthenticationError(errorDetails.message, errorDetails);
     }
 
     return SupabaseMapper.toDomainResponse(data.user);
@@ -59,14 +67,16 @@ export class SupabaseAuthAdapter implements AuthRepository {
   async signOut(): Promise<void> {
     const { error } = await this.client.auth.signOut();
     if (error) {
-      throw new AuthenticationError(error.message, error);
+      const errorDetails = SupabaseAuthAdapter.mapError(error);
+      throw new AuthenticationError(errorDetails.message, errorDetails);
     }
   }
 
   async resetPassword(email: string): Promise<void> {
     const { error } = await this.client.auth.resetPasswordForEmail(email);
     if (error) {
-      throw new AuthenticationError(error.message, error);
+      const errorDetails = SupabaseAuthAdapter.mapError(error);
+      throw new AuthenticationError(errorDetails.message, errorDetails);
     }
   }
 
@@ -76,7 +86,12 @@ export class SupabaseAuthAdapter implements AuthRepository {
       error,
     } = await this.client.auth.getUser();
 
-    if (error || !user) {
+    if (error) {
+      const errorDetails = SupabaseAuthAdapter.mapError(error);
+      throw new AuthenticationError(errorDetails.message, errorDetails);
+    }
+
+    if (!user) {
       return null;
     }
 
