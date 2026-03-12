@@ -42,7 +42,9 @@ export default function LoginPage() {
               helped my team deliver features faster than ever before. Highly
               recommended for agile projects.&rdquo;
             </p>
-            <footer className="text-sm">Sofia Davis, Lead Engineer</footer>
+            <footer className="text-sm">
+              Juan Pablo Leon Maya, Lead Engineer
+            </footer>
           </blockquote>
         </div>
       </div>
