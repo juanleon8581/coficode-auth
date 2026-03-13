@@ -1,4 +1,5 @@
 import { IRawJson } from "@/domain/interfaces/IRawJson";
+import { ValidationMessages } from "@/domain/messages/validation.messages";
 
 export interface ILoginDTO {
   email: string;
@@ -15,11 +16,11 @@ export class LoginDTO implements ILoginDTO {
     const { email, password } = data;
 
     if (!email) {
-      return ["Email is required", undefined];
+      return [ValidationMessages.REQUIRED_FIELD("Email"), undefined];
     }
 
     if (!password) {
-      return ["Password is required", undefined];
+      return [ValidationMessages.REQUIRED_FIELD("Password"), undefined];
     }
 
     return [undefined, new LoginDTO(email, password)];

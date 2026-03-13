@@ -1,4 +1,5 @@
 import { IRawJson } from "@/domain/interfaces/IRawJson";
+import { ValidationMessages } from "@/domain/messages/validation.messages";
 
 export interface IRegisterDTO {
   email: string;
@@ -15,9 +16,9 @@ export class RegisterDTO implements IRegisterDTO {
 
   static create(data: IRawJson): [string?, RegisterDTO?] {
     const { email, password, fullName } = data;
-    if (!email) return ["Email is required", undefined];
-    if (!password) return ["Password is required", undefined];
-    if (!fullName) return ["Full name is required", undefined];
+    if (!email) return [ValidationMessages.REQUIRED_FIELD("Email"), undefined];
+    if (!password) return [ValidationMessages.REQUIRED_FIELD("Password"), undefined];
+    if (!fullName) return [ValidationMessages.REQUIRED_FIELD("Full name"), undefined];
     return [undefined, new RegisterDTO(email, password, fullName)];
   }
 }
