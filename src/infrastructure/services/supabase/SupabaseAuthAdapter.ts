@@ -22,7 +22,7 @@ export class SupabaseAuthAdapter implements AuthRepository {
   async signIn(dto: LoginDTO): Promise<IAuthResponse> {
     if (!dto.password) {
       throw new AuthenticationError(
-        AuthMessages.SUPABASE_PASSWORD_REQUIRED_SIGN_IN,
+        AuthMessages.SUPABASE_PASS_REQUIRED_SIGN_IN,
       );
     }
 
@@ -43,7 +43,7 @@ export class SupabaseAuthAdapter implements AuthRepository {
   async signUp(dto: RegisterDTO): Promise<IAuthResponse> {
     if (!dto.password) {
       throw new AuthenticationError(
-        AuthMessages.SUPABASE_PASSWORD_REQUIRED_SIGN_UP,
+        AuthMessages.SUPABASE_PASS_REQUIRED_SIGN_UP,
       );
     }
 

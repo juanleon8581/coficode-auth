@@ -5,7 +5,9 @@ import { SupabaseAuthAdapter } from "@/infrastructure/services/supabase/Supabase
 import { ForgotPasswordFormValues } from "@/infrastructure/validations/authSchemas";
 import { AuthMessages } from "@/domain/messages/auth.messages";
 
-export async function forgotPasswordAction(data: ForgotPasswordFormValues): Promise<{ error?: string, success?: true }> {
+export async function forgotPasswordAction(
+  data: ForgotPasswordFormValues,
+): Promise<{ error?: string; success?: true }> {
   const supabase = await createClient();
   const authAdapter = new SupabaseAuthAdapter(supabase);
 
@@ -15,7 +17,7 @@ export async function forgotPasswordAction(data: ForgotPasswordFormValues): Prom
     if (error instanceof Error) {
       return { error: error.message };
     }
-    return { error: AuthMessages.ACTION_PASSWORD_RESET_FAILED };
+    return { error: AuthMessages.ACTION_RESET_PASS_FAILED };
   }
 
   // Return logic, the client will show the success banner
