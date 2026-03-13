@@ -3,6 +3,7 @@
 import { createClient } from "@/infrastructure/services/supabase/server";
 import { SupabaseAuthAdapter } from "@/infrastructure/services/supabase/SupabaseAuthAdapter";
 import { LoginFormValues } from "@/infrastructure/validations/authSchemas";
+import { AuthMessages } from "@/domain/messages/auth.messages";
 import { redirect } from "next/navigation";
 
 export async function loginAction(
@@ -20,7 +21,7 @@ export async function loginAction(
     if (error instanceof Error) {
       return { error: error.message };
     }
-    return { error: "Error logging in" };
+    return { error: AuthMessages.ACTION_LOGIN_FAILED };
   }
 
   // If the login is successful, we redirect to the main list or dashboard

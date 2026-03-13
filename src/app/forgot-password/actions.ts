@@ -3,6 +3,7 @@
 import { createClient } from "@/infrastructure/services/supabase/server";
 import { SupabaseAuthAdapter } from "@/infrastructure/services/supabase/SupabaseAuthAdapter";
 import { ForgotPasswordFormValues } from "@/infrastructure/validations/authSchemas";
+import { AuthMessages } from "@/domain/messages/auth.messages";
 
 export async function forgotPasswordAction(data: ForgotPasswordFormValues): Promise<{ error?: string, success?: true }> {
   const supabase = await createClient();
@@ -14,7 +15,7 @@ export async function forgotPasswordAction(data: ForgotPasswordFormValues): Prom
     if (error instanceof Error) {
       return { error: error.message };
     }
-    return { error: "Failed to request password reset" };
+    return { error: AuthMessages.ACTION_PASSWORD_RESET_FAILED };
   }
 
   // Return logic, the client will show the success banner
