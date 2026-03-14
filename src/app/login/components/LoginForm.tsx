@@ -51,7 +51,7 @@ export const LoginForm = ({
 
   return (
     <div className="w-full max-w-sm space-y-6">
-      <div className="space-y-2 text-center md:text-left">
+      <div className="space-y-2 text-center lg:text-left">
         <h1 className="text-2xl font-bold tracking-tight">
           Bienvenido de nuevo
         </h1>
