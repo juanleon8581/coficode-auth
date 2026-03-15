@@ -60,9 +60,9 @@
     "forgotPasswordTitle": "Reset Password | CofiAuth",
     "forgotPasswordDescription": "Reset your CofiAuth account password."
   },
-  "branding": {
-    "tagline": "The modern and secure solution for your team's access management.",
-    "testimonial": "This boilerplate has saved me countless hours of setup and helped my team deliver features faster than ever before. Highly recommended for agile projects.",
-    "testimonialAuthor": "Sofia Davis, Lead Engineer"
+  "home": {
+    "title": "🔐 CofiCode Auth",
+    "description": "A production-ready authentication template built with Clean Architecture, i18n support, and a complete UI kit — ready to clone and ship.",
+    "githubButton": "View on GitHub"
   }
 }

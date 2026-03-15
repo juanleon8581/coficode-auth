@@ -60,9 +60,9 @@
     "forgotPasswordTitle": "Recuperar Contraseña | CofiAuth",
     "forgotPasswordDescription": "Restablece la contraseña de tu cuenta de CofiAuth."
   },
-  "branding": {
-    "tagline": "La solución moderna y segura para la gestión de accesos de tu equipo.",
-    "testimonial": "Este boilerplate me ha ahorrado incontables horas de configuración y ha ayudado a mi equipo a entregar features más rápido que nunca. Altamente recomendado para proyectos ágiles.",
-    "testimonialAuthor": "Sofia Davis, Lead Engineer"
+  "home": {
+    "title": "🔐 CofiCode Auth",
+    "description": "Una plantilla de autenticación lista para producción, construida con Clean Architecture, soporte i18n y un UI kit completo — lista para clonar y lanzar.",
+    "githubButton": "Ver en GitHub"
   }
 }
