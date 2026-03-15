@@ -23,14 +23,21 @@ import {
   successToast,
   errorToast,
 } from "@/presentation/components/Toaster/controller/toast.controller";
+import { Dictionary } from "@/infrastructure/i18n/dictionaries";
+import { Locale } from "@/infrastructure/i18n/config";
+import { LocalizedLink } from "@/presentation/components/LocalizedLink/LocalizedLink";
 
-export const RegisterForm = ({
-  onSubmit,
-}: {
+type RegisterTranslations = Dictionary["register"] & Dictionary["common"];
+
+interface Props {
   onSubmit?: (
     data: RegisterFormValues,
   ) => Promise<{ error?: string } | void> | void;
-}) => {
+  translations: RegisterTranslations;
+  lang: Locale;
+}
+
+export const RegisterForm = ({ onSubmit, translations: t, lang }: Props) => {
   const form = useForm<RegisterFormValues>({
     resolver: ValidationAdapter.getResolver<RegisterFormValues>(registerSchema),
     defaultValues: {
@@ -46,10 +53,10 @@ export const RegisterForm = ({
     if (onSubmit) {
       const result = await onSubmit(data);
       if (result?.error) {
-        errorToast("Registration failed", result.error);
+        errorToast(t.errorTitle, result.error);
         return;
       }
-      successToast("Registration successful", "Redirecting to login...");
+      successToast(t.successTitle, t.successMessage);
     }
   };
 
@@ -57,10 +64,10 @@ export const RegisterForm = ({
     <div className="w-full max-w-[600px] flex flex-col relative">
       <div className="flex flex-col gap-2 mb-8">
         <h2 className="text-slate-900 dark:text-white text-3xl font-black leading-tight tracking-tight">
-          Crear una cuenta
+          {t.title}
         </h2>
         <p className="text-slate-500 dark:text-slate-400 text-base font-normal leading-normal">
-          Ingresa tus datos para registrarte en CofiAuth
+          {t.subtitle}
         </p>
       </div>
       <Form {...form}>
@@ -74,9 +81,9 @@ export const RegisterForm = ({
               name="fullName"
               render={({ field }) => (
                 <FormItem className="flex-1">
-                  <FormLabel>Nombre completo</FormLabel>
+                  <FormLabel>{t.fullNameLabel}</FormLabel>
                   <FormControl>
-                    <Input placeholder="Ingresa tu nombre" {...field} />
+                    <Input placeholder={t.fullNamePlaceholder} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -87,11 +94,11 @@ export const RegisterForm = ({
               name="email"
               render={({ field }) => (
                 <FormItem className="flex-1">
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel>{t.emailLabel}</FormLabel>
                   <FormControl>
                     <Input
                       type="email"
-                      placeholder="nombre@ejemplo.com"
+                      placeholder={t.placeholders.email}
                       {...field}
                     />
                   </FormControl>
@@ -106,9 +113,13 @@ export const RegisterForm = ({
               name="password"
               render={({ field }) => (
                 <FormItem className="flex-1">
-                  <FormLabel>Password</FormLabel>
+                  <FormLabel>{t.passwordLabel}</FormLabel>
                   <FormControl>
-                    <Input type="password" placeholder="••••••••" {...field} />
+                    <Input
+                      type="password"
+                      placeholder={t.placeholders.password}
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -119,9 +130,13 @@ export const RegisterForm = ({
               name="confirmPassword"
               render={({ field }) => (
                 <FormItem className="flex-1">
-                  <FormLabel>Confirmar Password</FormLabel>
+                  <FormLabel>{t.confirmPasswordLabel}</FormLabel>
                   <FormControl>
-                    <Input type="password" placeholder="••••••••" {...field} />
+                    <Input
+                      type="password"
+                      placeholder={t.placeholders.password}
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -141,7 +156,7 @@ export const RegisterForm = ({
                 </FormControl>
                 <div className="space-y-1 leading-none">
                   <FormLabel className="font-normal text-slate-600 dark:text-slate-300">
-                    Acepto los términos y condiciones
+                    {t.acceptTerms}
                   </FormLabel>
                 </div>
                 <FormMessage />
@@ -154,20 +169,21 @@ export const RegisterForm = ({
               type="submit"
               className="w-full h-12 bg-black hover:bg-black/90 dark:bg-zinc-800 dark:hover:bg-zinc-700 dark:text-zinc-50 text-white font-medium"
             >
-              Registrarse
+              {t.submitButton}
             </Button>
           </div>
         </form>
       </Form>
       <div className="mt-8 text-center">
         <p className="text-slate-500 dark:text-slate-400 text-sm">
-          ¿Ya tienes cuenta?{" "}
-          <a
+          {t.hasAccount}
+          <LocalizedLink
+            locale={lang}
             href="/login"
-            className="text-primary dark:text-white font-semibold hover:underline underline-offset-4 transition-all"
+            className="text-primary dark:text-white font-semibold hover:underline underline-offset-4 transition-all ml-2"
           >
-            Inicia sesión
-          </a>
+            {t.login}
+          </LocalizedLink>
         </p>
       </div>
     </div>

@@ -1,7 +1,6 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-
 import { Button } from "@/presentation/components/ui/button";
 import {
   Form,
@@ -17,47 +16,46 @@ import {
   loginSchema,
   LoginFormValues,
 } from "@/infrastructure/validations/authSchemas";
-
 import {
   successToast,
   errorToast,
 } from "@/presentation/components/Toaster/controller/toast.controller";
+import type { Dictionary } from "@/infrastructure/i18n/dictionaries";
+import { Locale } from "@/infrastructure/i18n/config";
+import { LocalizedLink } from "@/presentation/components/LocalizedLink/LocalizedLink";
 
-export const LoginForm = ({
-  onSubmit,
-}: {
+type LoginTranslations = Dictionary["login"] & Dictionary["common"];
+
+interface Props {
   onSubmit?: (
     data: LoginFormValues,
   ) => Promise<{ error?: string } | void> | void;
-}) => {
+  translations: LoginTranslations;
+  lang: Locale;
+}
+
+export const LoginForm = ({ onSubmit, translations: t, lang }: Props) => {
   const form = useForm<LoginFormValues>({
     resolver: ValidationAdapter.getResolver<LoginFormValues>(loginSchema),
-    defaultValues: {
-      email: "",
-      password: "",
-    },
+    defaultValues: { email: "", password: "" },
   });
 
   const handleSubmit = async (data: LoginFormValues) => {
     if (onSubmit) {
       const result = await onSubmit(data);
       if (result?.error) {
-        errorToast("Error logging in", result.error);
+        errorToast(t.errorTitle, result.error);
         return;
       }
-      successToast("Login successful", "Redirecting...");
+      successToast(t.successTitle, t.successMessage);
     }
   };
 
   return (
     <div className="w-full max-w-sm space-y-6">
       <div className="space-y-2 text-center lg:text-left">
-        <h1 className="text-2xl font-bold tracking-tight">
-          Bienvenido de nuevo
-        </h1>
-        <p className="text-sm text-muted-foreground">
-          Ingresa tus credenciales para acceder
-        </p>
+        <h1 className="text-2xl font-bold tracking-tight">{t.title}</h1>
+        <p className="text-sm text-muted-foreground">{t.subtitle}</p>
       </div>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
@@ -68,7 +66,7 @@ export const LoginForm = ({
               <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input placeholder="usuario@ejemplo.com" {...field} />
+                  <Input placeholder={t.placeholders.email} {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -81,7 +79,11 @@ export const LoginForm = ({
               <FormItem>
                 <FormLabel>Password</FormLabel>
                 <FormControl>
-                  <Input type="password" placeholder="********" {...field} />
+                  <Input
+                    type="password"
+                    placeholder={t.placeholders.password}
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -91,25 +93,27 @@ export const LoginForm = ({
             type="submit"
             className="w-full bg-black text-white hover:bg-black/90"
           >
-            Entrar
+            {t.submitButton}
           </Button>
         </form>
       </Form>
       <div className="flex flex-col space-y-4 text-center text-sm">
-        <a
+        <LocalizedLink
           href="/forgot-password"
+          locale={lang}
           className="text-muted-foreground hover:underline"
         >
-          ¿Olvidaste tu contraseña?
-        </a>
+          {t.forgotPassword}
+        </LocalizedLink>
         <div className="text-muted-foreground">
-          ¿No tienes una cuenta?{" "}
-          <a
+          {t.noAccount}{" "}
+          <LocalizedLink
             href="/register"
+            locale={lang}
             className="font-medium text-primary hover:underline"
           >
-            Regístrate
-          </a>
+            {t.register}
+          </LocalizedLink>
         </div>
       </div>
     </div>
