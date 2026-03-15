@@ -41,6 +41,7 @@ export default async function ForgotPasswordPage({ params }: Readonly<Props>) {
           <ForgotPasswordForm
             onSubmit={forgotPasswordAction}
             translations={{ ...dict.forgotPassword, ...dict.common }}
+            validationTranslations={dict.validation}
             lang={lang as Locale}
           />
         </div>

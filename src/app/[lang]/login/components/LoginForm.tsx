@@ -13,8 +13,9 @@ import {
 import { Input } from "@/presentation/components/ui/input";
 import { ValidationAdapter } from "@/infrastructure/adapters/ZodAdapter";
 import {
-  loginSchema,
+  createLoginSchema,
   LoginFormValues,
+  ValidationTranslations,
 } from "@/infrastructure/validations/authSchemas";
 import {
   successToast,
@@ -29,20 +30,29 @@ type LoginTranslations = Dictionary["login"] & Dictionary["common"];
 interface Props {
   onSubmit?: (
     data: LoginFormValues,
+    locale: Locale,
   ) => Promise<{ error?: string } | void> | void;
   translations: LoginTranslations;
+  validationTranslations: ValidationTranslations;
   lang: Locale;
 }
 
-export const LoginForm = ({ onSubmit, translations: t, lang }: Props) => {
+export const LoginForm = ({
+  onSubmit,
+  translations: t,
+  validationTranslations,
+  lang,
+}: Props) => {
   const form = useForm<LoginFormValues>({
-    resolver: ValidationAdapter.getResolver<LoginFormValues>(loginSchema),
+    resolver: ValidationAdapter.getResolver<LoginFormValues>(
+      createLoginSchema(validationTranslations),
+    ),
     defaultValues: { email: "", password: "" },
   });
 
   const handleSubmit = async (data: LoginFormValues) => {
     if (onSubmit) {
-      const result = await onSubmit(data);
+      const result = await onSubmit(data, lang);
       if (result?.error) {
         errorToast(t.errorTitle, result.error);
         return;

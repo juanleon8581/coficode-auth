@@ -41,6 +41,7 @@ export default async function RegisterPage({ params }: Readonly<Props>) {
           <RegisterForm
             onSubmit={registerAction}
             translations={{ ...dict.register, ...dict.common }}
+            validationTranslations={dict.validation}
             lang={lang as Locale}
           />
         </div>

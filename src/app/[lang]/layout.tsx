@@ -6,6 +6,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "@/presentation/styles/globals.css";
 import { Toaster } from "@/presentation/components/Toaster/Toaster";
 import { i18nConfig, type Locale } from "@/infrastructure/i18n/config";
+import { LanguageSwitcher } from "@/presentation/components/LanguageSwitcher/LanguageSwitcher";
+import React from "react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -44,6 +46,9 @@ export default async function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <div className="fixed top-4 right-4 z-50">
+          <LanguageSwitcher currentLocale={lang as Locale} />
+        </div>
         {children}
         <Toaster />
       </body>

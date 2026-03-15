@@ -7,7 +7,7 @@ import { i18nConfig, type Locale } from "@/infrastructure/i18n/config";
 import { notFound } from "next/navigation";
 
 interface Props {
-  params: Promise<{ lang: Locale }>;
+  params: Promise<{ lang: string }>;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -37,10 +37,10 @@ export default async function LoginPage({ params }: Readonly<Props>) {
           <div className="lg:hidden">
             <Logo orientation="vertical" />
           </div>
-
           <LoginForm
             onSubmit={loginAction}
             translations={{ ...dict.login, ...dict.common }}
+            validationTranslations={dict.validation}
             lang={lang as Locale}
           />
         </div>

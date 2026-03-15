@@ -15,8 +15,9 @@ import { Input } from "@/presentation/components/ui/input";
 import { Checkbox } from "@/presentation/components/ui/checkbox";
 import { ValidationAdapter } from "@/infrastructure/adapters/ZodAdapter";
 import {
-  registerSchema,
+  createRegisterSchema,
   RegisterFormValues,
+  ValidationTranslations,
 } from "@/infrastructure/validations/authSchemas";
 
 import {
@@ -32,14 +33,23 @@ type RegisterTranslations = Dictionary["register"] & Dictionary["common"];
 interface Props {
   onSubmit?: (
     data: RegisterFormValues,
+    locale: Locale,
   ) => Promise<{ error?: string } | void> | void;
   translations: RegisterTranslations;
+  validationTranslations: ValidationTranslations;
   lang: Locale;
 }
 
-export const RegisterForm = ({ onSubmit, translations: t, lang }: Props) => {
+export const RegisterForm = ({
+  onSubmit,
+  translations: t,
+  validationTranslations,
+  lang,
+}: Props) => {
   const form = useForm<RegisterFormValues>({
-    resolver: ValidationAdapter.getResolver<RegisterFormValues>(registerSchema),
+    resolver: ValidationAdapter.getResolver<RegisterFormValues>(
+      createRegisterSchema(validationTranslations),
+    ),
     defaultValues: {
       fullName: "",
       email: "",
@@ -51,7 +61,7 @@ export const RegisterForm = ({ onSubmit, translations: t, lang }: Props) => {
 
   const handleSubmit = async (data: RegisterFormValues) => {
     if (onSubmit) {
-      const result = await onSubmit(data);
+      const result = await onSubmit(data, lang);
       if (result?.error) {
         errorToast(t.errorTitle, result.error);
         return;

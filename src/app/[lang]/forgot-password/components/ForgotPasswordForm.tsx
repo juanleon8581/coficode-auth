@@ -17,40 +17,36 @@ import {
 import { Input } from "@/presentation/components/ui/input";
 import { ValidationAdapter } from "@/infrastructure/adapters/ZodAdapter";
 import {
-  forgotPasswordSchema,
+  createForgotPasswordSchema,
   ForgotPasswordFormValues,
+  ValidationTranslations,
 } from "@/infrastructure/validations/authSchemas";
 import { type Locale } from "@/infrastructure/i18n/config";
-import Link from "next/link";
+import type { Dictionary } from "@/infrastructure/i18n/dictionaries";
+import { LocalizedLink } from "@/presentation/components/LocalizedLink/LocalizedLink";
 
-type ForgotPasswordTranslations = {
-  title: string;
-  subtitle: string;
-  submitButton: string;
-  login: string;
-  successTitle: string;
-  successMessage: string;
-  errorTitle: string;
-  email: string;
-  placeholders: {
-    email: string;
-  };
-};
+type ForgotPasswordTranslations = Dictionary["forgotPassword"] &
+  Dictionary["common"];
 
 interface Props {
   onSubmit?: (
     data: ForgotPasswordFormValues,
   ) => Promise<{ error?: string; success?: boolean }> | void;
   translations: ForgotPasswordTranslations;
+  validationTranslations: ValidationTranslations;
   lang: Locale;
 }
 
-export const ForgotPasswordForm = ({ onSubmit, translations, lang }: Props) => {
+export const ForgotPasswordForm = ({
+  onSubmit,
+  translations: t,
+  validationTranslations,
+  lang,
+}: Props) => {
   const form = useForm<ForgotPasswordFormValues>({
-    resolver:
-      ValidationAdapter.getResolver<ForgotPasswordFormValues>(
-        forgotPasswordSchema,
-      ),
+    resolver: ValidationAdapter.getResolver<ForgotPasswordFormValues>(
+      createForgotPasswordSchema(validationTranslations),
+    ),
     defaultValues: {
       email: "",
     },
@@ -60,19 +56,19 @@ export const ForgotPasswordForm = ({ onSubmit, translations, lang }: Props) => {
     if (onSubmit) {
       const result = await onSubmit(data);
       if (result?.error) {
-        errorToast(translations.errorTitle, result.error);
+        errorToast(t.errorTitle, result.error);
         return;
       }
-      successToast(translations.successTitle, translations.successMessage);
+      successToast(t.successTitle, t.successMessage);
     }
   };
 
   return (
     <div className="w-full max-w-[400px]">
       <div className="flex flex-col gap-3 mb-10 text-center">
-        <h2 className="text-3xl font-bold tracking-tight">{translations.title}</h2>
+        <h2 className="text-3xl font-bold tracking-tight">{t.title}</h2>
         <p className="text-muted-foreground text-sm leading-relaxed">
-          {translations.subtitle}
+          {t.subtitle}
         </p>
       </div>
 
@@ -86,11 +82,11 @@ export const ForgotPasswordForm = ({ onSubmit, translations, lang }: Props) => {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>{translations.email}</FormLabel>
+                <FormLabel>{t.email}</FormLabel>
                 <FormControl>
                   <Input
                     type="email"
-                    placeholder={translations.placeholders.email}
+                    placeholder={t.placeholders.email}
                     {...field}
                   />
                 </FormControl>
@@ -99,18 +95,19 @@ export const ForgotPasswordForm = ({ onSubmit, translations, lang }: Props) => {
             )}
           />
           <Button type="submit" className="w-full">
-            {translations.submitButton}
+            {t.submitButton}
           </Button>
         </form>
       </Form>
 
       <div className="mt-8 text-center text-sm">
-        <Link
-          href={`/${lang}/login`}
+        <LocalizedLink
+          href="/login"
+          locale={lang}
           className="text-muted-foreground hover:text-primary transition-colors"
         >
-          {translations.login}
-        </Link>
+          {t.login}
+        </LocalizedLink>
       </div>
     </div>
   );
