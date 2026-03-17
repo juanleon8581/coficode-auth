@@ -39,6 +39,10 @@ export default async function Home({ params }: Readonly<Props>) {
         </p>
       </div>
 
+      <p className="max-w-xl rounded-md border border-yellow-300 bg-yellow-50 px-4 py-2 text-sm text-yellow-800">
+        {dict.home.templateNote}
+      </p>
+
       <div className="flex flex-wrap justify-center gap-2">
         {TECH_STACK.map((tech) => (
           <Badge key={tech.label} className={tech.className}>

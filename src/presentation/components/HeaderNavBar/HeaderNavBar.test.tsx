@@ -27,11 +27,13 @@ describe("HeaderNavBar.test", () => {
         const container = screen.getByTestId("header-navbar-container");
         const classList = container.classList;
 
-        expect(classList.length).toBe(4);
+        expect(classList.length).toBe(6);
         expect(classList).toContain("flex");
         expect(classList).toContain("items-center");
         expect(classList).toContain("justify-between");
         expect(classList).toContain("p-8");
+        expect(classList).toContain("border-b");
+        expect(classList).toContain("border-muted-foreground");
       });
     });
   });

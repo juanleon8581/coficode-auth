@@ -12,7 +12,7 @@ export const HeaderNavBar = ({ lang }: Props) => {
   return (
     <div
       data-testid="header-navbar-container"
-      className="flex items-center justify-between p-8"
+      className="flex items-center justify-between p-8 border-b border-muted-foreground"
     >
       <Logo dataTestId="header-navbar-logo" />
       <div
