@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
+
 import { notFound } from "next/navigation";
 import { Geist, Geist_Mono } from "next/font/google";
-import "@/presentation/styles/globals.css";
 import { Toaster } from "@/presentation/components/Toaster/Toaster";
 import { i18nConfig, type Locale } from "@/infrastructure/i18n/config";
 import React from "react";
-import { HeaderNavBar } from "@/presentation/components/HeaderNavBar/HeaderNavBar";
+
+import "@/presentation/styles/globals.css";
+import "@/presentation/styles/globals.texts.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -44,10 +46,7 @@ export default async function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}
       >
-        <HeaderNavBar lang={lang as Locale} />
-        <main className="flex-1 flex items-center justify-center">
-          {children}
-        </main>
+        {children}
         <Toaster />
       </body>
     </html>

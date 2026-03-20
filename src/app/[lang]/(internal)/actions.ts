@@ -2,24 +2,26 @@
 
 import { createClient } from "@/infrastructure/services/supabase/server";
 import { SupabaseAuthAdapter } from "@/infrastructure/services/supabase/SupabaseAuthAdapter";
-import { ForgotPasswordFormValues } from "@/infrastructure/validations/authSchemas";
 import { AuthMessages } from "@/domain/messages/auth.messages";
+import { redirect } from "next/navigation";
+import { type Locale } from "@/infrastructure/i18n/config";
+import { type SignOutScope } from "@/domain/repositories/IAuthRepository";
 
-export async function forgotPasswordAction(
-  data: ForgotPasswordFormValues,
-): Promise<{ error?: string; success?: true }> {
+export async function logoutAction(
+  locale: Locale,
+  scope: SignOutScope = "local",
+): Promise<{ error?: string } | void> {
   const supabase = await createClient();
   const authAdapter = new SupabaseAuthAdapter(supabase);
 
   try {
-    await authAdapter.resetPassword(data.email);
+    await authAdapter.signOut(scope);
   } catch (error: unknown) {
     if (error instanceof Error) {
       return { error: error.message };
     }
-    return { error: AuthMessages.ACTION_RESET_PASS_FAILED };
+    return { error: AuthMessages.ACTION_LOGOUT_FAILED };
   }
 
-  // Return logic, the client will show the success banner
-  return { success: true };
+  redirect(`/${locale}/login`);
 }
